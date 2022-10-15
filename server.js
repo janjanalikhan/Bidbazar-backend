@@ -46,25 +46,26 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, '/public')));
 
 // routes
-app.use('/', require('./routes/root'));
+app.use('/root', require('./routes/root'));
+
+app.use('/', require('./routes/auth'));
 
 app.use('/auth', require('./routes/auth'));
 
-app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 
 
 
-app.use('/admin',
-    verifyAdmin,
-    require('./routes/adminRoutes'));
+// app.use('/admin',
+//     verifyAdmin,
+//     require('./routes/adminRoutes'));
 //{"Email": "dan@dan.com" , "Password": "12345"}
 
 app.use(verifyJWT);
 
-app.use('/student', require('./routes/api/student'));
-app.use('/teacher', require('./routes/api/teacher'))
+// app.use('/student', require('./routes/api/student'));
+// app.use('/teacher', require('./routes/api/teacher'))
 
 
 app.all('*', (req, res) => {
