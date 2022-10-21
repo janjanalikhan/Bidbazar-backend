@@ -22,6 +22,7 @@ const verifyJWT = (req, res, next) => {
         
             req.Email = decoded.Email;
             req.Role = decoded.Role;
+            req.dbId = decoded.dbId;
          
             next();
         }

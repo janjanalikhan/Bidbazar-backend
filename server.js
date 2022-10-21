@@ -64,7 +64,16 @@ app.use('/logout', require('./routes/logout'));
 
 app.use(verifyJWT);
 
-// app.use('/student', require('./routes/api/student'));
+
+
+app.use('/seller', require('./routes/api/seller'));
+
+app.use('/buyer', require('./routes/api/buyer'));
+
+app.use('/common', require('./routes/api/commonRoutes'));
+
+
+
 // app.use('/teacher', require('./routes/api/teacher'))
 
 

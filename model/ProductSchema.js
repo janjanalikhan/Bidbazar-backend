@@ -1,91 +1,60 @@
 var mongoose = require("mongoose");
-var StudentSchema = new mongoose.Schema({
-  
+var ProductSchema = new mongoose.Schema({
+  ProductOwner: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Seller",
+  },
+
   Name: {
     type: String,
-    
-  },
-  
-  RegNo: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  
-  Email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  
-  Password: {
-    type: String,
-    required: true,
   },
 
-  PhoneNumber: {
-    type: Number,
-
+  Image : {
+    type: String,
   },
-  Gender: {
+
+  Description: {
+    type: String,
+  },
+
+  Category: {
+    type: String,
+  },
+  InitialPrice: {
+    type: String,
+  },
+  Bids: [{ type: mongoose.Schema.ObjectId, ref: "Bid" }],
+
+  MaxAllowedBid: {
+    // calucated at the backend when product is added according to the category
+    type: String,
+  },
+  Location: {
+    type: String,
+  },
+
+  Buyer: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Buyer",
+  },
+
+  BidClosingDate: {
+    type: Date,
+  },
+
+  IsSold: {
     type: Boolean,
+    default: false,
+  },
+
+  SoldPrice: {
+    type: String,
+  },
+
+  SoldDate: {
+    type: Date,
+  },
   
-  },
-
-  ProfilePicture: {
-    type: String,
-    
-  },
-
-  Role: {
-    type: String,
-
-  },
-
-
-  Position: {
-    type: String,
-
-  },
-
-  FypStatus: {
-    type: String,
- 
-  },
-
-  Project:  {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Project'
-
-  },
-
-
-  CommitteeEvaluation: [ {
-  
-    type: mongoose.Schema.ObjectId,
-      ref: 'EvaluationCommittee'
- 
-  }],
-
-  SupervisorEvaluation: [ {
-    type: mongoose.Schema.ObjectId,
-    ref: 'EvaluationSupervisor'
-
-  }],
-
-  Notifications: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'Notification'
-
-  }],
-
-  OnlineStatus: {
-    type: Boolean,
-  },
-
-  RefreshToken: {
-    type: String,
-  }
 });
 
-module.exports = mongoose.model("Student", StudentSchema);
+module.exports = mongoose.model("Product", ProductSchema);
