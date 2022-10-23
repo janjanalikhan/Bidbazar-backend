@@ -54,13 +54,15 @@ app.use('/auth', require('./routes/auth'));
 
 app.use('/logout', require('./routes/logout'));
 
-
+app.use('/public',require('./routes/publicApis'));
 
 
 // app.use('/admin',
 //     verifyAdmin,
 //     require('./routes/adminRoutes'));
 //{"Email": "dan@dan.com" , "Password": "12345"}
+
+
 
 app.use(verifyJWT);
 
