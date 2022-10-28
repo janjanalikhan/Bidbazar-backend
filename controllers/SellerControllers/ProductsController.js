@@ -1,8 +1,49 @@
 
 const SellerDB = require('../../model/SellerSchema');
+const BuyerDB = require('../../model/BuyerSchema');
 const ProductDB = require('../../model/ProductSchema');
 const BidDB = require('../../model/BidSchema');
 
+
+//acceptBid
+
+module.exports.acceptBid = async (req, res) => {
+
+    if (!req?.body?.ID) return res.status(400).json({ 'message': 'ID required.' });
+  
+    const seller = await SellerDB.findOne({ _id: req.dbId }).exec();
+    const buyer = await BuyerDB.findOne({ _id: req.body.ID }).exec();
+    const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
+   
+    seller.ProductsSold = [...seller.ProductsSold, req.body.ProductID];
+
+    
+    buyer.BoughtProducts = [...buyer.BoughtProducts, req.body.ProductID];
+
+    var updateProject = await SellerDB.updateOne(
+        { '_id': req.dbId },
+        { $pull: { Products: req.body.ProductID } },
+
+    );
+    
+
+    product.IsSold = true;
+    product.SoldDate = Date.now();
+    product.Buyer = req.body.ID ;
+    product.SoldPrice = req.body.SoldPrice;
+
+
+    await product.save();
+    await buyer.save();
+    await seller.save();
+    res.json("Accepted");
+    
+    // if (!product) {
+    //     return res.status(204).json({ "message": `No Product matches Title` });
+    // }
+    // res.json(product);
+
+}
 
 
 module.exports.getSingleProducts = async (req, res) => {
@@ -21,11 +62,11 @@ module.exports.getSingleProducts = async (req, res) => {
 
 module.exports.getAllProducts = async (req, res) => {
 
-//  
-    const product = await ProductDB.find().populate({ path: 'Bids', modal: 'Bids', populate: { path: 'Bidder', modal: 'Buyer' } }).populate("ProductOwner");
+    //  
+    const product = await ProductDB.find().populate({ path: 'Bids', modal: 'Bids', populate: { path: 'Bidder', modal: 'Buyer' } }).populate("ProductOwner")
     if (!product) return res.status(204).json({ 'message': 'No Product found.' });
     try {
-       
+
         res.json(product)
     }
     catch (err) {
@@ -54,7 +95,7 @@ module.exports.getSellerProducts = async (req, res) => {
 
     //req.dbId is id of seller
 
-    const products = await SellerDB.findOne({ _id: req.dbId }).populate('Products');
+    const products = await SellerDB.findOne({ _id: req.dbId }).populate({ path: 'Products', modal: 'Products', populate: { path: 'Bids', modal: 'Bids', populate: { path: 'Bidder', modal: 'Bidder' } } }).populate("ProductsSold");;
     if (!products) return res.status(204).json({ 'message': 'No Projects found.' });
     try {
         res.json(products)
@@ -69,17 +110,17 @@ module.exports.getSellerProducts = async (req, res) => {
 module.exports.addProduct = async (req, res) => {
 
 
-   
 
-    var { 
+
+    var {
         ProductOwnerID,
-        Name, 
-        Description, 
-        Category, 
-        Location, 
-        InitialPrice, 
-        MaxAllowedBid, 
-        BidClosingDate, 
+        Name,
+        Description,
+        Category,
+        Location,
+        InitialPrice,
+        MaxAllowedBid,
+        BidClosingDate,
         Image } = req.body;
 
     if (!Name || !ProductOwnerID) return res.status(400).json({ 'message': 'Name || ProductOwnerID  is required.' });
@@ -90,15 +131,15 @@ module.exports.addProduct = async (req, res) => {
 
 
         const ProductOwner = await SellerDB.findOne({ _id: ProductOwnerID });
-    
+
 
         const newProduct = await ProductDB.create({
             ProductOwner,
-            Name, 
-            Description, 
-            Category, 
-            InitialPrice, 
-            MaxAllowedBid, 
+            Name,
+            Description,
+            Category,
+            InitialPrice,
+            MaxAllowedBid,
             Location,
             BidClosingDate,
             Image

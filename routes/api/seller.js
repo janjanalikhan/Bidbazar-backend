@@ -7,6 +7,7 @@ const ProductController = require('../../controllers/SellerControllers/ProductsC
 const ROLES_LIST = require('../../config/roles_list');
 const verifyRoles = require('../../middleware/verifyRoles');
 
+router.post('/acceptBid', verifyRoles(ROLES_LIST.Seller), ProductController.acceptBid);
 
 router.post('/addproduct', verifyRoles(ROLES_LIST.Seller), ProductController.addProduct);
 router.get('/getsellerproducts', verifyRoles(ROLES_LIST.Seller), ProductController.getSellerProducts);

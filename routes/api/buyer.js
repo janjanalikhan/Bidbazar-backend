@@ -8,7 +8,7 @@ const verifyRoles = require('../../middleware/verifyRoles');
 
 
 router.post('/placebid', verifyRoles(ROLES_LIST.Buyer), BidController.placeBid)
-
+router.get('/getbuyerproducts', verifyRoles(ROLES_LIST.Buyer), BidController.getBuyerproducts);
 
 
 // router.get('/allProject', verifyRoles(ROLES_LIST.TeamMember, ROLES_LIST.TeamLead), StudentProjectController.getAllProject)
