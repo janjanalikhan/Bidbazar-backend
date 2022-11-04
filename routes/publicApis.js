@@ -6,6 +6,8 @@ const ProductController = require('../controllers/SellerControllers/ProductsCont
 
 
 router.get('/products',  ProductController.getAllProducts)
+router.post('/forgotpassword',ProductController.forgotPassword)
+
 
 
 module.exports = router;

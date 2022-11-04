@@ -53,6 +53,7 @@ app.use('/', require('./routes/auth'));
 app.use('/auth', require('./routes/auth'));
 
 app.use('/logout', require('./routes/logout'));
+app.use('/logout', require('./routes/logout'));
 
 app.use('/public',require('./routes/publicApis'));
 

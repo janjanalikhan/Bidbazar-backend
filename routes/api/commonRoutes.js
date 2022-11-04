@@ -13,6 +13,7 @@ router.post('/product', verifyRoles(ROLES_LIST.Seller, ROLES_LIST.Buyer), Produc
 
 
 
+
 // router.get('/allProject', verifyRoles(ROLES_LIST.TeamMember, ROLES_LIST.TeamLead), StudentProjectController.getAllProject)
 // router.put('/project', verifyRoles(ROLES_LIST.TeamMember, ROLES_LIST.TeamLead), StudentProjectController.updateProject)
 

@@ -8,9 +8,7 @@ const jwt = require('jsonwebtoken');
 
 const SignUp = async (req, res) => {
 
-    console.log("SignUp Called")
-    console.log(req.body.ProfilePicture)
-
+ 
 
 
     var {  Name, Email, Password, PhoneNumber, Address, ProfilePicture, CategoryInterestedIn, Country, Role } = req.body;
@@ -27,7 +25,7 @@ const SignUp = async (req, res) => {
                 Name, Email, Password, PhoneNumber, ProfilePicture, Role, Country
             });
 
-            console.log(newSeller);
+          
 
             res.status(201).json({ 'success': `New Seller ${newSeller} created!` });
         }
@@ -49,9 +47,9 @@ const SignUp = async (req, res) => {
                 Name, Email, Password, PhoneNumber, Address, ProfilePicture, Role, CategoryInterestedIn, Country
             });
 
-            console.log(newBuyer);
+   
 
-            res.status(201).json({ 'success': `New Buyer ${newBuyer} created!` });
+            res.status(201).json({ 'success': `New Buyer created!` });
         }
         catch (err) {
             res.status(500).json({ 'message': err.message });

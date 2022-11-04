@@ -3,40 +3,94 @@ const SellerDB = require('../../model/SellerSchema');
 const BuyerDB = require('../../model/BuyerSchema');
 const ProductDB = require('../../model/ProductSchema');
 const BidDB = require('../../model/BidSchema');
+const bcrypt = require('bcrypt');
+require("dotenv").config();
+const Stripe = require('stripe');
+const stripe = Stripe("sk_test_51M0NQiKEmYVICoofE9jOOnSq2Q32EBaiKBDGhBuurRyTUk3IzKvJxSg6934y1tA8KRxyaHUPohNNB3ZYbWTpOBmf00oqpPnUFt")
 
+
+module.exports.forgotPassword = async (req, res) => {
+
+    if (!req?.body?.Email) return res.status(400).json({ 'message': 'Email required.' });
+    const seller = await SellerDB.findOne({ Email: req.body.Email })
+    const buyer = await BuyerDB.findOne({ Email: req.body.Email })
+    if (!seller && !buyer) return res.status(204).json({ 'message': 'No user found.' });
+    const NewPassword = await bcrypt.hash(req.body.Password, 10);
+
+    if(seller){
+
+    seller.Password = NewPassword;
+    await seller.save();
+    res.json("Password Changed");
+
+    }
+
+    else{
+        buyer.Password = NewPassword;
+        await buyer.save();
+        res.json("Password Changed");
+    }
+
+
+
+}
 
 //acceptBid
-
 module.exports.acceptBid = async (req, res) => {
 
     if (!req?.body?.ID) return res.status(400).json({ 'message': 'ID required.' });
+
+
+
   
     const seller = await SellerDB.findOne({ _id: req.dbId }).exec();
     const buyer = await BuyerDB.findOne({ _id: req.body.ID }).exec();
     const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
+
+
+    const session = await stripe.checkout.sessions.create({
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: 'T-shirt',
+              },
+              unit_amount: 2000,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `http://localhost:3000/chckout-success`,
+        cancel_url: `http://localhost:3000/seller/dashboard`,
+      });
+    
+      res.redirect(303, session.url);
+
    
-    seller.ProductsSold = [...seller.ProductsSold, req.body.ProductID];
+    // seller.ProductsSold = [...seller.ProductsSold, req.body.ProductID];
 
     
-    buyer.BoughtProducts = [...buyer.BoughtProducts, req.body.ProductID];
+    // buyer.BoughtProducts = [...buyer.BoughtProducts, req.body.ProductID];
 
-    var updateProject = await SellerDB.updateOne(
-        { '_id': req.dbId },
-        { $pull: { Products: req.body.ProductID } },
+    // var updateProject = await SellerDB.updateOne(
+    //     { '_id': req.dbId },
+    //     { $pull: { Products: req.body.ProductID } },
 
-    );
+    // );
     
 
-    product.IsSold = true;
-    product.SoldDate = Date.now();
-    product.Buyer = req.body.ID ;
-    product.SoldPrice = req.body.SoldPrice;
+    // product.IsSold = true;
+    // product.SoldDate = Date.now();
+    // product.Buyer = req.body.ID ;
+    // product.SoldPrice = req.body.SoldPrice;
 
 
-    await product.save();
-    await buyer.save();
-    await seller.save();
-    res.json("Accepted");
+    // await product.save();
+    // await buyer.save();
+    // await seller.save();
+    // res.json("Accepted");
     
     // if (!product) {
     //     return res.status(204).json({ "message": `No Product matches Title` });
