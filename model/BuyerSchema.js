@@ -45,6 +45,13 @@ var BuyerSchema = new mongoose.Schema({
 
   }],
 
+  ProductsPaymentsToClear: [{
+    
+    type: mongoose.Schema.ObjectId,
+      ref: 'Product'
+
+  }],
+
   Notification: [{
     type: String,
 

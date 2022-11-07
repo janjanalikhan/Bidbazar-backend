@@ -8,6 +8,55 @@ require("dotenv").config();
 const Stripe = require('stripe');
 const stripe = Stripe("sk_test_51M0NQiKEmYVICoofE9jOOnSq2Q32EBaiKBDGhBuurRyTUk3IzKvJxSg6934y1tA8KRxyaHUPohNNB3ZYbWTpOBmf00oqpPnUFt")
 
+//acceptBid
+
+
+module.exports.acceptBid = async (req, res) => {
+
+
+    if (!req?.body?.ID) return res.status(400).json({ 'message': 'ID required.' });
+
+    const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
+    
+    const seller = await SellerDB.findOne({ _id: req.dbId }).exec();
+    const buyer = await BuyerDB.findOne({ _id: req.body.ID }).exec();
+
+    if (!product) {
+        return res.status(204).json({ "message": `No Product matches Title` });
+    }
+
+    
+    product.BidAccepted = true;
+    product.Buyer = req.body.ID;
+    product.AcceptedBidPrice = req.body.AcceptedBidPrice;
+    buyer.ProductsPaymentsToClear = [...buyer.ProductsPaymentsToClear, req.body.ProductID];
+
+
+    await product.save();
+    await buyer.save();
+
+
+    res.json("Bid Accepted");
+
+
+
+}
+
+module.exports.sellerProducts = async (req, res) => {
+
+
+    //req.dbId is id of seller
+
+    const products = await SellerDB.findOne({ _id: req.body.ID }).populate({ path: 'Products', modal: 'Products', populate: { path: 'Bids', modal: 'Bids', populate: { path: 'Bidder', modal: 'Bidder' } } }).populate("ProductsSold");;
+    if (!products) return res.status(204).json({ 'message': 'No Projects found.' });
+    try {
+        res.json(products)
+    }
+    catch (err) {
+        res.status(500).json({ 'message': err.message });
+    }
+
+}
 
 module.exports.forgotPassword = async (req, res) => {
 
@@ -17,15 +66,15 @@ module.exports.forgotPassword = async (req, res) => {
     if (!seller && !buyer) return res.status(204).json({ 'message': 'No user found.' });
     const NewPassword = await bcrypt.hash(req.body.Password, 10);
 
-    if(seller){
+    if (seller) {
 
-    seller.Password = NewPassword;
-    await seller.save();
-    res.json("Password Changed");
+        seller.Password = NewPassword;
+        await seller.save();
+        res.json("Password Changed");
 
     }
 
-    else{
+    else {
         buyer.Password = NewPassword;
         await buyer.save();
         res.json("Password Changed");
@@ -35,69 +84,10 @@ module.exports.forgotPassword = async (req, res) => {
 
 }
 
-//acceptBid
-module.exports.acceptBid = async (req, res) => {
-
-    if (!req?.body?.ID) return res.status(400).json({ 'message': 'ID required.' });
 
 
 
-  
-    const seller = await SellerDB.findOne({ _id: req.dbId }).exec();
-    const buyer = await BuyerDB.findOne({ _id: req.body.ID }).exec();
-    const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
 
-
-    const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: 'T-shirt',
-              },
-              unit_amount: 2000,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        success_url: `http://localhost:3000/chckout-success`,
-        cancel_url: `http://localhost:3000/seller/dashboard`,
-      });
-    
-      res.redirect(303, session.url);
-
-   
-    // seller.ProductsSold = [...seller.ProductsSold, req.body.ProductID];
-
-    
-    // buyer.BoughtProducts = [...buyer.BoughtProducts, req.body.ProductID];
-
-    // var updateProject = await SellerDB.updateOne(
-    //     { '_id': req.dbId },
-    //     { $pull: { Products: req.body.ProductID } },
-
-    // );
-    
-
-    // product.IsSold = true;
-    // product.SoldDate = Date.now();
-    // product.Buyer = req.body.ID ;
-    // product.SoldPrice = req.body.SoldPrice;
-
-
-    // await product.save();
-    // await buyer.save();
-    // await seller.save();
-    // res.json("Accepted");
-    
-    // if (!product) {
-    //     return res.status(204).json({ "message": `No Product matches Title` });
-    // }
-    // res.json(product);
-
-}
 
 
 module.exports.getSingleProducts = async (req, res) => {
