@@ -1,4 +1,4 @@
-const User = require('../model/AdminSchema');
+const User = require('../model/SellerSchema');
 
 const handleLogout = async (req, res) => {
     // On client, also delete the accessToken
@@ -11,7 +11,8 @@ const handleLogout = async (req, res) => {
     const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-        return res.sendStatus(204);
+        
+    res.send({ url: "https://637136482a37147a0bfb474b--ubiquitous-trifle-03a1d4.netlify.app" });
     }
 
     // Delete refreshToken in db
@@ -20,7 +21,8 @@ const handleLogout = async (req, res) => {
     console.log(result);
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-    res.sendStatus(200);
+    
+    res.send({ url: "https://637136482a37147a0bfb474b--ubiquitous-trifle-03a1d4.netlify.app" });
 }
 
 module.exports = { handleLogout }
