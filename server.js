@@ -39,6 +39,7 @@ app.use(cors({credentials: true, origin: 'https://637141dea5d3277cbb9be53e--ubiq
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
 
+///added
 // built-in middleware for json 
 app.use(express.json());
 
