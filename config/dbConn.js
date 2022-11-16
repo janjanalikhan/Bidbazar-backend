@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
 
     try {
-        await mongoose.connect("mongodb://localhost:27017/auctionDB", {
+        await mongoose.connect("mongodb+srv://bidbazar:bidbazar@cluster0.3zswfvm.mongodb.net/?retryWrites=true&w=majority", {
             useUnifiedTopology: true,
             useNewUrlParser: true
         });

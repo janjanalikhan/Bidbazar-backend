@@ -33,8 +33,10 @@ app.use(credentials);
 //     origin: ["http://localhost:3000", "https://637136482a37147a0bfb474b--ubiquitous-trifle-03a1d4.netlify.app"],
 // }));
 
-app.use(cors({credentials: true, origin: 'https://637141dea5d3277cbb9be53e--ubiquitous-trifle-03a1d4.netlify.app'}));
-// app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+
+
+// app.use(cors({credentials: true, origin: 'https://637141dea5d3277cbb9be53e--ubiquitous-trifle-03a1d4.netlify.app'}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
