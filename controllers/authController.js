@@ -158,7 +158,7 @@ const BuyerLogin = async (req, res) => {
 
 const AdminLogin = async (req, res) => {
 
-    console.log(req.body)
+   
 
     const { Email, Password } = req.body;
 

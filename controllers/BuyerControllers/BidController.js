@@ -44,7 +44,7 @@ module.exports.changeFromDatabase = async (req, res) => {
 
         product.IsSold = true;
         product.SoldDate = Date.now();
-        product.Buyer = req.body.ID;
+        product.Buyer = req.dbId;
         product.SoldPrice = req.body.SoldPrice;
 
         await admin.save();
@@ -166,9 +166,14 @@ module.exports.placeBid = async (req, res) => {
 
     });
 
+    if(req.body.BidAmount > product.MaxBid){
+        product.MaxBid = req.body.BidAmount
+    }
+
     const ProductOwner = await SellerDB.findOne({ _id: product.ProductOwner })
 
     ProductOwner.NewBidPlaced = true;
+    await product.save();
 
     await ProductOwner.save();
 

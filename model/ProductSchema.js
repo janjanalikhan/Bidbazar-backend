@@ -12,6 +12,11 @@ var ProductSchema = new mongoose.Schema({
   Image : {
     type: String,
   },
+  
+  Shipped:{
+    type: Boolean,
+    default: false,
+  },
 
   Description: {
     type: String,
@@ -55,6 +60,10 @@ var ProductSchema = new mongoose.Schema({
   IsSold: {
     type: Boolean,
     default: false,
+  },
+  MaxBid:{
+    type: String,
+    default: "0"
   },
 
   SoldPrice: {
