@@ -11,6 +11,11 @@ var SellerSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+
+  NewBidPlaced: {
+    type: Boolean,
+    default: false,
+  },
   
   Password: {
     type: String,

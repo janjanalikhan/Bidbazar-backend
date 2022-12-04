@@ -17,9 +17,9 @@ const verifyJWT = (req, res, next) => {
         RefreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
-           
+       
             if (err) return res.json(err); //invalid token
-        
+          
             req.Email = decoded.Email;
             req.Role = decoded.Role;
             req.dbId = decoded.dbId;

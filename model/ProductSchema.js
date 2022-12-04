@@ -41,10 +41,12 @@ var ProductSchema = new mongoose.Schema({
   BidClosingDate: {
     type: Date,
   },
+
   BidAccepted: {
     type: Boolean,
     default: false,
   },
+
 
   
   AcceptedBidPrice: {

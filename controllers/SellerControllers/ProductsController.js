@@ -9,6 +9,51 @@ const Stripe = require('stripe');
 const stripe = Stripe("sk_test_51M0NQiKEmYVICoofE9jOOnSq2Q32EBaiKBDGhBuurRyTUk3IzKvJxSg6934y1tA8KRxyaHUPohNNB3ZYbWTpOBmf00oqpPnUFt")
 
 //acceptBid
+//newBidSeen
+
+
+module.exports.newBidSeen = async (req, res) => {
+    console.log("newBidSeen", req.dbId)
+    const ProductOwner = await SellerDB.findOne({ _id: req.dbId })
+
+    ProductOwner.NewBidPlaced = false;
+
+    await ProductOwner.save();
+
+    return res.status(200);
+    //Bid Time added here to make it secure
+
+    // if (!req?.body?.BidderID | !req?.body?.ProductID | !req?.body?.BidAmount) return res.status(400).json({ 'message': 'IDs are required.' });
+
+    // const product = await ProductDB.findOne({ _id: req.body.ProductID })
+    // const newBid = await BidDB.create({
+    //     Bidder: req.body.BidderID,
+    //     Amount: req.body.BidAmount,
+    //     Date: Date.now(),
+
+    // });
+
+    // const ProductOwner = await SellerDB.findOne({ _id: product.ProductOwner })
+
+    // ProductOwner.NewBidPlaced = true ;
+
+    // await ProductOwner.save();
+
+
+    // var updateProduct = await ProductDB.updateOne(
+    //     { '_id': req.body.ProductID },
+    //     { $push: { Bids: newBid } },
+    // )
+
+    // if (!product) {
+    //     return res.status(204).json({ "message": `No Product matches Title` });
+    // }
+    // res.json(product);
+
+}
+
+
+
 
 
 module.exports.acceptBid = async (req, res) => {
@@ -17,7 +62,7 @@ module.exports.acceptBid = async (req, res) => {
     if (!req?.body?.ID) return res.status(400).json({ 'message': 'ID required.' });
 
     const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
-    
+
     const seller = await SellerDB.findOne({ _id: req.dbId }).exec();
     const buyer = await BuyerDB.findOne({ _id: req.body.ID }).exec();
 
@@ -25,7 +70,7 @@ module.exports.acceptBid = async (req, res) => {
         return res.status(204).json({ "message": `No Product matches Title` });
     }
 
-    
+
     product.BidAccepted = true;
     product.Buyer = req.body.ID;
     product.AcceptedBidPrice = req.body.AcceptedBidPrice;

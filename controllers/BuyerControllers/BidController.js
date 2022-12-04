@@ -151,7 +151,7 @@ module.exports.placeBid = async (req, res) => {
     //Bid Time added here to make it secure
 
     if (!req?.body?.BidderID | !req?.body?.ProductID | !req?.body?.BidAmount) return res.status(400).json({ 'message': 'IDs are required.' });
-
+    
     const product = await ProductDB.findOne({ _id: req.body.ProductID })
     const newBid = await BidDB.create({
         Bidder: req.body.BidderID,
@@ -159,6 +159,13 @@ module.exports.placeBid = async (req, res) => {
         Date: Date.now(),
 
     });
+
+    const ProductOwner = await SellerDB.findOne({ _id: product.ProductOwner })
+
+    ProductOwner.NewBidPlaced = true ;
+   
+    await ProductOwner.save();
+
 
     var updateProduct = await ProductDB.updateOne(
         { '_id': req.body.ProductID },
@@ -171,3 +178,5 @@ module.exports.placeBid = async (req, res) => {
     res.json(product);
 
 }
+
+

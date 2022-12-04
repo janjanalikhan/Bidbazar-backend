@@ -15,6 +15,10 @@ router.get('/getsellerproducts', verifyRoles(ROLES_LIST.Seller), ProductControll
 router.post('/deleteproduct', verifyRoles(ROLES_LIST.Seller), ProductController.deleteProduct);
 router.get('/getAllProducts', verifyRoles(ROLES_LIST.Seller, ROLES_LIST.Buyer), ProductController.getAllProducts)
 
+router.post('/newBidSeen', verifyRoles(ROLES_LIST.Seller), ProductController.newBidSeen)
+
+
+//newBidSeen
 
 
 // router.get('/allProject', verifyRoles(ROLES_LIST.TeamMember, ROLES_LIST.TeamLead), StudentProjectController.getAllProject)
