@@ -21,39 +21,9 @@ module.exports.newBidSeen = async (req, res) => {
     await ProductOwner.save();
 
     return res.status(200);
-    //Bid Time added here to make it secure
 
-    // if (!req?.body?.BidderID | !req?.body?.ProductID | !req?.body?.BidAmount) return res.status(400).json({ 'message': 'IDs are required.' });
-
-    // const product = await ProductDB.findOne({ _id: req.body.ProductID })
-    // const newBid = await BidDB.create({
-    //     Bidder: req.body.BidderID,
-    //     Amount: req.body.BidAmount,
-    //     Date: Date.now(),
-
-    // });
-
-    // const ProductOwner = await SellerDB.findOne({ _id: product.ProductOwner })
-
-    // ProductOwner.NewBidPlaced = true ;
-
-    // await ProductOwner.save();
-
-
-    // var updateProduct = await ProductDB.updateOne(
-    //     { '_id': req.body.ProductID },
-    //     { $push: { Bids: newBid } },
-    // )
-
-    // if (!product) {
-    //     return res.status(204).json({ "message": `No Product matches Title` });
-    // }
-    // res.json(product);
 
 }
-
-
-
 
 
 module.exports.acceptBid = async (req, res) => {

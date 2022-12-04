@@ -1,6 +1,7 @@
 
 const SellerDB = require('../../model/SellerSchema');
 const ProductDB = require('../../model/ProductSchema');
+const AdminDB = require('../../model/AdminSchema');
 const BidDB = require('../../model/BidSchema');
 const BuyerDB = require('../../model/BuyerSchema');
 const Stripe = require('stripe');
@@ -15,6 +16,8 @@ module.exports.changeFromDatabase = async (req, res) => {
     const seller = await SellerDB.findOne({ _id: req.body.SellerID }).exec();
     const buyer = await BuyerDB.findOne({ _id: req.dbId }).exec();
     const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
+    const admin = await AdminDB.findOne({ Email: "admin@bazar.com" }).exec();
+
 
     if (product.IsSold) {
         return res.status(204).json({ "message": `Product has been sold` });
@@ -26,9 +29,9 @@ module.exports.changeFromDatabase = async (req, res) => {
 
     try {
 
+        admin.ToBeShipped   = [...admin.ToBeShipped, req.body.ProductID];
 
         seller.ProductsSold = [...seller.ProductsSold, req.body.ProductID];
-
 
         buyer.BoughtProducts = [...buyer.BoughtProducts, req.body.ProductID];
 
@@ -44,7 +47,7 @@ module.exports.changeFromDatabase = async (req, res) => {
         product.Buyer = req.body.ID;
         product.SoldPrice = req.body.SoldPrice;
 
-
+        await admin.save();
         await product.save();
         await buyer.save();
         await seller.save();
@@ -76,7 +79,10 @@ module.exports.checkout = async (req, res) => {
 
     const buyer = await BuyerDB.findOne({ _id: req.body.BuyerID }).exec();
     const product = await ProductDB.findOne({ _id: req.body.ProductID }).exec();
-console.log("product.ProductOwner._id: ", product.ProductOwner._id)
+  
+
+  
+    console.log("product.ProductOwner._id: ", product.ProductOwner._id)
 
 
 
@@ -151,7 +157,7 @@ module.exports.placeBid = async (req, res) => {
     //Bid Time added here to make it secure
 
     if (!req?.body?.BidderID | !req?.body?.ProductID | !req?.body?.BidAmount) return res.status(400).json({ 'message': 'IDs are required.' });
-    
+
     const product = await ProductDB.findOne({ _id: req.body.ProductID })
     const newBid = await BidDB.create({
         Bidder: req.body.BidderID,
@@ -162,8 +168,8 @@ module.exports.placeBid = async (req, res) => {
 
     const ProductOwner = await SellerDB.findOne({ _id: product.ProductOwner })
 
-    ProductOwner.NewBidPlaced = true ;
-   
+    ProductOwner.NewBidPlaced = true;
+
     await ProductOwner.save();
 
 

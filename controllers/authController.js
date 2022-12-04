@@ -8,10 +8,10 @@ const jwt = require('jsonwebtoken');
 
 const SignUp = async (req, res) => {
 
- 
 
 
-    var {  Name, Email, Password, PhoneNumber, Address, ProfilePicture, CategoryInterestedIn, Country, Role } = req.body;
+
+    var { Name, Email, Password, PhoneNumber, Address, ProfilePicture, CategoryInterestedIn, Country, Role } = req.body;
     if (!Name || !Email || !Password) return res.status(400).json({ 'message': 'Name, Email and Password is required.' });
 
     if (Role == "Seller") {
@@ -25,7 +25,7 @@ const SignUp = async (req, res) => {
                 Name, Email, Password, PhoneNumber, ProfilePicture, Role, Country
             });
 
-          
+
 
             res.status(201).json({ 'success': `New Seller ${newSeller} created!` });
         }
@@ -47,7 +47,7 @@ const SignUp = async (req, res) => {
                 Name, Email, Password, PhoneNumber, Address, ProfilePicture, Role, CategoryInterestedIn, Country
             });
 
-   
+
 
             res.status(201).json({ 'success': `New Buyer created!` });
         }
@@ -157,7 +157,7 @@ const BuyerLogin = async (req, res) => {
 
 
 const AdminLogin = async (req, res) => {
-    
+
     console.log(req.body)
 
     const { Email, Password } = req.body;
@@ -175,6 +175,8 @@ const AdminLogin = async (req, res) => {
 
     const refreshToken = jwt.sign(
         {
+            "dbId": foundAdmin._id,
+            "Name": "Admin",
             "Email": foundAdmin.Email,
             "Role": "Admin"
 
@@ -189,7 +191,7 @@ const AdminLogin = async (req, res) => {
 
 
     // Creates Secure Cookie with refresh token
-    res.cookie('jwt', refreshToken, { sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('jwt', refreshToken, { secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
     // Send authorization roles and access token to user
     res.json({ refreshToken, "Role": "Admin" });
